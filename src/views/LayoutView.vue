@@ -1,6 +1,16 @@
 <script setup>
 import { useRouter } from 'vue-router'
-import { CaretBottom, EditPen, Management, Promotion, SwitchButton, User, UserFilled } from '@element-plus/icons-vue'
+import {
+  Avatar,
+  EditPen,
+  Goods,
+  Histogram,
+  PictureFilled,
+  ShoppingCart,
+  SwitchButton,
+  User,
+  UserFilled
+} from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 
 import { useTokenStore } from '@/stores/token.js'
@@ -8,7 +18,7 @@ import { useLoginUserStore } from '@/stores/loginUser.js'
 
 const tokenStore = useTokenStore()
 const loginUserStore = useLoginUserStore()
-let loginUser =loginUserStore.loginUser
+let loginUser = loginUserStore.loginUser
 
 const router = useRouter()
 const handleCommand =
@@ -59,18 +69,49 @@ const handleCommand =
       <div class="el-aside__logo"></div>
       <!-- element-plus的菜单标签 -->
       <el-menu active-text-color="#ffd04b" background-color="#232323" text-color="#fff" router>
-        <el-menu-item index="/article/category">
+        <el-sub-menu>
+
+          <template #title>
+            <el-icon>
+              <Histogram />
+            </el-icon>
+            <span>图表</span>
+          </template>
+          <el-menu-item index="/chart/top10">
+            <template #title>
+              <el-icon>
+                <PictureFilled />
+              </el-icon>
+              <span>top10</span></template>
+          </el-menu-item>
+
+          <el-menu-item index="/chart/dailyChange">
+            <template #title>
+              <el-icon>
+                <PictureFilled />
+              </el-icon>
+              <span>dailyChange</span>
+            </template>
+
+          </el-menu-item>
+        </el-sub-menu>
+        <el-menu-item index="/product/productInfo">
           <el-icon>
-            <Management />
+            <Goods />
           </el-icon>
-          <span>文章分类</span>
+          <span>商品管理</span>
         </el-menu-item>
-        <el-menu-item index="/article/manage">
+
+
+        <el-menu-item index="/product/shoppingCart">
           <el-icon>
-            <Promotion />
+            <ShoppingCart />
           </el-icon>
-          <span>文章管理</span>
+
+          <span>购物车</span>
         </el-menu-item>
+
+
         <el-sub-menu>
           <template #title>
             <el-icon>
@@ -102,10 +143,7 @@ const handleCommand =
         <!-- command: 条目被点击后会触发,在事件函数上可以声明一个参数,接收条目对应的指令 -->
         <el-dropdown placement="bottom-end" @command="handleCommand">
           <span class="el-dropdown__box">
-            <el-avatar :size="size" :src="circleUrl" />
-            <el-icon>
-              <CaretBottom />
-            </el-icon>
+              <el-icon size="30"><Avatar /></el-icon>
           </span>
           <template #dropdown>
             <el-dropdown-menu>

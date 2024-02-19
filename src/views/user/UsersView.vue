@@ -6,14 +6,14 @@ import { Edit } from '@element-plus/icons-vue'
 
 //添加分类数据模型
 const userModel = ref({
-  'username': '空',
-  'realName': '空',
-  'phone': '空',
-  'email': '空',
-  'address': '空',
-  'notes': '空',
-  'createdAt': '空',
-  'updatedAt': '空'
+  'username': '',
+  'realName': '',
+  'phone': '',
+  'email': '',
+  'address': '',
+  'notes': '',
+  'createdAt': '',
+  'updatedAt': ''
 })
 
 const allUsers = ref([])
@@ -21,7 +21,6 @@ const allUsers = ref([])
 const pageNum = ref(1)//当前页
 const total = ref(20)//总条数
 const pageSize = ref(3)//每页条数
-
 
 
 //当每页条数发生了变化，调用此函数
@@ -36,13 +35,12 @@ const onCurrentChange = (num) => {
 }
 
 const getAllUsers = async () => {
-  let  pageHelperParams = ref(
+  let pageHelperParams = ref(
     {
       pageNum: pageNum.value,
       pageSize: pageSize.value
     }
   )
-  console.log(pageHelperParams.value)
   let result = await getAllUserService(pageHelperParams.value)
   //渲染视图
   total.value = result.data.total

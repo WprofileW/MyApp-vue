@@ -16,7 +16,12 @@ const isRegister = ref(false)
 const registerData = ref({
   username: '',
   password: '',
-  rePassword: ''
+  rePassword: '',
+  realName: '',
+  phone: '',
+  email: '',
+  address: '',
+  notes: ''
 })
 
 //校验密码的函数
@@ -42,7 +47,6 @@ const rules = {
   ],
   rePassword: [{ validator: checkRePassword, trigger: 'blur' }]
 }
-
 
 const register = async () => {
   let result = await userRegisterService(registerData.value)
@@ -149,8 +153,7 @@ const clearRegisterData = () => {
   background-color: #fff;
 
   .bg {
-    background: url("@/assets/logo2.png") no-repeat 60% center / 240px auto,
-    url("@/assets/login_bg.jpg") no-repeat center / cover;
+    background: url("@/assets/login_bg.jpg") no-repeat center / cover;
     border-radius: 0 20px 20px 0;
   }
 

@@ -6,7 +6,6 @@ import { useLoginUserStore } from '@/stores/loginUser.js'
 
 const loginUserStore = useLoginUserStore()
 
-
 const userInfo = ref({
   'realName': '空',
   'phone': '空',
