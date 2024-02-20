@@ -4,6 +4,7 @@ import request from '@/utils/request.js'
 //提供调用注册接口的函数
 export const userRegisterService =
   (registerData) => {
+    // console.log(registerData)
     return request.post('/user/register', registerData)
   }
 

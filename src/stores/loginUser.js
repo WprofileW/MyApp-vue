@@ -3,11 +3,13 @@ import { ref } from 'vue'
 
 export const useLoginUserStore =
   defineStore('loginUser', () => {
-    const loginUser = ref('')
+    const loginUser = ref({})
 
     const setLoginUser =
       (newLoginUser) => {
-        loginUser.value = newLoginUser
+        // console.log(newLoginUser)
+        loginUser.value.username = newLoginUser.value.username
+        loginUser.value.roleId = newLoginUser.value.roleId
       }
 
     const removeLoginUser = () => {

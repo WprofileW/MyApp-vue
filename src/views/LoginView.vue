@@ -17,12 +17,15 @@ const registerData = ref({
   username: '',
   password: '',
   rePassword: '',
+  roleId: '1',
   realName: '',
   phone: '',
   email: '',
   address: '',
   notes: ''
 })
+
+const loginUser = ref({})
 
 //校验密码的函数
 const checkRePassword = (rule, value, callback) => {
@@ -50,6 +53,7 @@ const rules = {
 
 const register = async () => {
   let result = await userRegisterService(registerData.value)
+  console.log(registerData)
   ElMessage.success(result.msg ? result.msg : '注册成功')
 }
 
@@ -60,7 +64,9 @@ const login = async () => {
   //调用接口,完成登录
   let result = await userLoginService(registerData.value)
   ElMessage.success(result.msg ? result.msg : '登录成功')
-  loginUserStore.setLoginUser(registerData.value.username)
+  loginUser.value.username = registerData.value.username
+  loginUser.value.roleId = registerData.value.roleId
+  loginUserStore.setLoginUser(loginUser)
   tokenStore.setToken(result.data)
   //跳转到首页 路由完成跳转
   router.push('/')
@@ -71,7 +77,13 @@ const clearRegisterData = () => {
   registerData.value = {
     username: '',
     password: '',
-    rePassword: ''
+    rePassword: '',
+    roleId: 1,
+    realName: '',
+    phone: '',
+    email: '',
+    address: '',
+    notes: ''
   }
 }
 </script>

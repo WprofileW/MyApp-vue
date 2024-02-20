@@ -21,7 +21,7 @@ const rules = {
     { required: true, message: '请输入用户真名', trigger: 'blur' },
     {
       pattern: /^\S{2,10}$/,
-      message: '昵称必须是2-10位的非空字符串',
+      message: '真名必须是2-10位的非空字符串',
       trigger: 'blur'
     }
   ],
@@ -57,7 +57,7 @@ onMounted(() => {
       <el-col :span="12">
         <el-form :model="userInfo" :rules="rules" label-width="100px" size="large">
           <el-form-item label="登录名称">
-            <el-input v-model="loginUserStore.loginUser" disabled></el-input>
+            <el-input v-model="loginUserStore.loginUser.username" disabled></el-input>
           </el-form-item>
           <el-form-item label="用户真名" prop="realName">
             <el-input v-model="userInfo.realName"></el-input>

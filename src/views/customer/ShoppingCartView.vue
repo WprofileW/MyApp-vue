@@ -35,13 +35,14 @@
 
     <el-button-group style="margin-top: 20px; justify-content: flex-end">
       <el-button
-        type="primary"
+        type="danger"
         @click="clearShoppingCart()">
         <el-icon>
           <DeleteFilled />
         </el-icon>
         清空购物车
       </el-button>
+      <el-button type="success">下单</el-button>
       <el-button type="primary">共{{ store.totalNum }}件商品</el-button>
       <el-button type="primary">共{{ store.totalPrice }}元</el-button>
     </el-button-group>

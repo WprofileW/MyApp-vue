@@ -5,7 +5,6 @@ export const useShoppingCartStore =
     state:
       () => (
         {
-          count: 0,
           listArr: [],
           selectListArr: []
         }),
@@ -28,7 +27,7 @@ export const useShoppingCartStore =
           if (state.selectListArr.length > 0) {
             price = state.selectListArr.reduce(
               (acc, cur) => {
-                console.log(acc, cur)
+                // console.log(acc, cur)
                 return acc + cur.num * cur.unitPrice
               }, 0)
           }
@@ -68,7 +67,6 @@ export const useShoppingCartStore =
           this.selectListArr = state
         },
         removeShoppingCartItems() {
-          this.count = 0
           this.listArr = []
           this.selectListArr = []
         }

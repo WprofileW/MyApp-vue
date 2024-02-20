@@ -5,19 +5,32 @@
         <span>商品信息</span>
       </div>
     </template>
+
+    <el-button type="primary" @click="visibleDrawer = true">
+      <el-icon>
+        <CirclePlusFilled />
+      </el-icon>
+      添加商品
+    </el-button>
+
     <el-table :data="productList" style="width: 100%">
-      <el-table-column fixed prop="productName" label="productName" width="160" />
+      <el-table-column fixed prop="inventoryId" label="inventoryId" width="160" />
+      <el-table-column prop="productName" label="productName" width="160" />
       <el-table-column prop="category" label="category" width="200" />
       <el-table-column prop="unitPrice" label="unitPrice" width="200" />
       <el-table-column prop="quantity" label="quantity" width="200" />
       <el-table-column prop="supplier" label="supplier" width="200" />
       <el-table-column prop="warehouseName" label="warehouseName" width="200" />
+      <el-table-column prop="updateTime" label="updateTime" width="200" />
       <el-table-column fixed="right" label="Operations" width="200">
         <template #default="{ row }">
           <el-button type="primary" :icon="Edit" size="small" @click="showDialog(row)">
             Edit
           </el-button>
-          <el-button type="primary" size="small" @click="addProduct(row)">
+          <el-button type="primary" :icon="DeleteFilled" size="small" @click="deleteProduct(row)">
+            Delete
+          </el-button>
+          <el-button type="primary" size="small" @click="addShoppingCart(row)">
             <el-icon>
               <ShoppingCart />
             </el-icon>
@@ -48,11 +61,14 @@
         <el-form-item label="productName">
           <el-input v-model="productModel.productName" minlength="1" maxlength="15"></el-input>
         </el-form-item>
-        <el-form-item label="category">
-          <el-input v-model="productModel.category" minlength="1" maxlength="15"></el-input>
+        <el-form-item label="unitPrice">
+          <el-input v-model="productModel.unitPrice" minlength="1" maxlength="15"></el-input>
         </el-form-item>
         <el-form-item label="quantity">
           <el-input v-model="productModel.quantity" minlength="1" maxlength="15"></el-input>
+        </el-form-item>
+        <el-form-item label="category">
+          <el-input v-model="productModel.category" minlength="1" maxlength="15"></el-input>
         </el-form-item>
         <el-form-item label="supplier">
           <el-input v-model="productModel.supplier" minlength="1" maxlength="15"></el-input>
@@ -60,36 +76,68 @@
         <el-form-item label="warehouseName">
           <el-input v-model="productModel.warehouseName" minlength="1" maxlength="15"></el-input>
         </el-form-item>
+        <el-form-item>
+          <el-button @click="dialogVisible = false;clearProductModel()">取消</el-button>
+          <el-button type="primary" @click="productInfoUpdate()"> 确认</el-button>
+        </el-form-item>
+
       </el-form>
-      <template #footer>
-        <span class="dialog-footer">
-            <el-button @click="dialogVisible = false">取消</el-button>
-                      <el-button type="primary" @click="userInfoUpdate()"> 确认 </el-button>
-        </span>
-      </template>
+
+
     </el-dialog>
+
+
+    <!-- 抽屉 -->
+    <el-drawer v-model="visibleDrawer" direction="rtl" size="50%">
+
+      <el-form :model="productModel" label-width="200px">
+        <el-form-item label="productName">
+          <el-input v-model="productModel.productName" placeholder="请输入标题"></el-input>
+        </el-form-item>
+        <el-form-item label="unitPrice">
+          <el-input v-model="productModel.unitPrice" placeholder="请输入标题"></el-input>
+        </el-form-item>
+        <el-form-item label="quantity">
+          <el-input v-model="productModel.quantity" placeholder="请输入标题"></el-input>
+        </el-form-item>
+        <el-form-item label="category">
+          <el-input v-model="productModel.category" placeholder="请输入标题"></el-input>
+        </el-form-item>
+        <el-form-item label="supplier">
+          <el-input v-model="productModel.supplier" placeholder="请输入标题"></el-input>
+        </el-form-item>
+        <el-form-item label="warehouseName">
+          <el-input v-model="productModel.warehouseName" placeholder="请输入标题"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="addProduct()">
+            添加商品
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </el-drawer>
   </el-card>
 
 </template>
 <script setup>
-import { Edit, ShoppingCart } from '@element-plus/icons-vue'
+import { CirclePlusFilled, DeleteFilled, Edit, ShoppingCart } from '@element-plus/icons-vue'
 
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 import { useShoppingCartStore } from '@/stores/shoppingCart.js'
-import { getAllProductService } from '@/api/product.js'
+import { addProductService, deleteProductService, getAllProductService, updateProductService } from '@/api/product.js'
 import { ElMessage } from 'element-plus'
+import { useLoginUserStore } from '@/stores/loginUser.js'
 
 //添加商品数据模型
 const productModel = ref({
-  'inventoryId': 5,
-  'productName': '苹果123',
-  'quantity': 999,
-  'category': '888',
-  'supplier': '777',
-  'warehouseName': '111',
-  'updateTime': '2024-02-19 12:52:42'
+  'productName': '',
+  'quantity': '',
+  'unitPrice': '',
+  'category': '',
+  'supplier': '',
+  'warehouseName': ''
 })
 
 const productList = ref([])
@@ -123,49 +171,91 @@ const onCurrentChange = (num) => {
   getAllProduct()
 }
 
-//控制添加分类弹窗
+//控制添加商品弹窗
 const dialogVisible = ref(false)
+//控制抽屉是否显示
+const visibleDrawer = ref(false)
 //定义变量,控制标题的展示
 const title = ref('')
+
 //展示编辑弹窗
-const showDialog = (row) => {
-  dialogVisible.value = true
-  title.value = '编辑商品信息'
-  //数据拷贝
-  productModel.value.inventoryId = row.inventoryId
-  productModel.value.productName = row.productName
-  productModel.value.quantity = row.quantity
-  productModel.value.category = row.category
-  productModel.value.supplier = row.supplier
-  productModel.value.warehouseName = row.warehouseName
-  productModel.value.updateTime = row.updateTime
-}
-
-const store = useShoppingCartStore()
-
-// 点击 添加购物车按钮
-const addProduct =
+const showDialog =
   (row) => {
-    store.increment(row)
-    ElMessage.success('添加成功')
-    //TODO
+    dialogVisible.value = true
+    title.value = '编辑商品信息'
+    console.log(row)
+    //数据拷贝
+    productModel.value.inventoryId = row.inventoryId
+    productModel.value.productName = row.productName
+    productModel.value.unitPrice = row.unitPrice
+    productModel.value.quantity = row.quantity
+    productModel.value.category = row.category
+    productModel.value.supplier = row.supplier
+    productModel.value.warehouseName = row.warehouseName
+    productModel.value.updateTime = row.updateTime
   }
 
+const addProduct =
+  () => {
+    addProductService(productModel.value)
+    ElMessage.success('添加成功')
+    visibleDrawer.value = false
+    getAllProduct()
+  }
+
+const deleteProduct =
+  (row) => {
+    deleteProductService(row)
+    ElMessage.success('删除成功')
+    getAllProduct()
+  }
+
+const productInfoUpdate =
+  async () => {
+    let result = await updateProductService(productModel.value)
+    ElMessage.success(result.msg ? result.msg : '修改成功')
+    await getAllProduct()
+    //隐藏弹窗
+    dialogVisible.value = false
+  }
+const clearProductModel =
+  () => {
+    productModel.value = {
+      'productName': '',
+      'quantity': '',
+      'unitPrice': '',
+      'category': '',
+      'supplier': '',
+      'warehouseName': ''
+    }
+
+  }
+
+const shoppingCartStore = useShoppingCartStore()
+const loginUserStore = useLoginUserStore()
+// 点击添加到购物车
+const addShoppingCart =
+  (row) => {
+    row.username = loginUserStore.loginUser.username
+    shoppingCartStore.increment(row)
+    ElMessage.success('添加成功')
+  }
 
 // 实例化路由
 const router = useRouter()
 // 跳转至购物车页面
-const goToCarPath = () => {
-  router.push({
-    path: '/product/shoppingCart'
-  })
-}
+const goToCarPath =
+  () => {
+    router.push({ path: '/product/shoppingCart' })
+  }
 
-onMounted(() => {
-  getAllProduct()
-})
+onMounted(
+  () => {
+    getAllProduct()
+  })
 
 </script>
+
 <style scoped>
 
 </style>
