@@ -1,133 +1,12 @@
-<template>
-  <el-card>
-    <template #header>
-      <div class="header">
-        <span>商品信息</span>
-      </div>
-    </template>
-
-    <el-button type="primary" @click="visibleDrawer = true">
-      <el-icon>
-        <CirclePlusFilled />
-      </el-icon>
-      添加商品
-    </el-button>
-
-    <el-table :data="productList" style="width: 100%">
-      <el-table-column fixed prop="inventoryId" label="inventoryId" width="160" />
-      <el-table-column prop="productName" label="productName" width="160" />
-      <el-table-column prop="category" label="category" width="200" />
-      <el-table-column prop="unitPrice" label="unitPrice" width="200" />
-      <el-table-column prop="quantity" label="quantity" width="200" />
-      <el-table-column prop="supplier" label="supplier" width="200" />
-      <el-table-column prop="warehouseName" label="warehouseName" width="200" />
-      <el-table-column prop="updateTime" label="updateTime" width="200" />
-      <el-table-column fixed="right" label="Operations" width="200">
-        <template #default="{ row }">
-          <el-button type="primary" :icon="Edit" size="small" @click="showDialog(row)">
-            Edit
-          </el-button>
-          <el-button type="primary" :icon="DeleteFilled" size="small" @click="deleteProduct(row)">
-            Delete
-          </el-button>
-          <el-button type="primary" size="small" @click="addShoppingCart(row)">
-            <el-icon>
-              <ShoppingCart />
-            </el-icon>
-            加入购物车
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <!-- 分页条 -->
-    <el-pagination
-      v-model:current-page="pageNum"
-      v-model:page-size="pageSize"
-      :page-sizes="[6, 12, 24, 32]"
-      layout="jumper, total, sizes, prev, pager, next"
-      background
-      :total="total"
-      @size-change="onSizeChange"
-      @current-change="onCurrentChange"
-      style="margin-top: 20px; justify-content: flex-end" />
-    <el-button
-      type="primary"
-      @click="goToCarPath"
-      style="margin-top: 20px; justify-content: flex-end">
-      跳转至购物车页面
-    </el-button>
-    <el-dialog v-model="dialogVisible" :title="title" width="30%">
-      <el-form :model="productModel" label-width="120px" style="padding-right: 30px">
-        <el-form-item label="productName">
-          <el-input v-model="productModel.productName" minlength="1" maxlength="15"></el-input>
-        </el-form-item>
-        <el-form-item label="unitPrice">
-          <el-input v-model="productModel.unitPrice" minlength="1" maxlength="15"></el-input>
-        </el-form-item>
-        <el-form-item label="quantity">
-          <el-input v-model="productModel.quantity" minlength="1" maxlength="15"></el-input>
-        </el-form-item>
-        <el-form-item label="category">
-          <el-input v-model="productModel.category" minlength="1" maxlength="15"></el-input>
-        </el-form-item>
-        <el-form-item label="supplier">
-          <el-input v-model="productModel.supplier" minlength="1" maxlength="15"></el-input>
-        </el-form-item>
-        <el-form-item label="warehouseName">
-          <el-input v-model="productModel.warehouseName" minlength="1" maxlength="15"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button @click="dialogVisible = false;clearProductModel()">取消</el-button>
-          <el-button type="primary" @click="productInfoUpdate()"> 确认</el-button>
-        </el-form-item>
-
-      </el-form>
-
-
-    </el-dialog>
-
-
-    <!-- 抽屉 -->
-    <el-drawer v-model="visibleDrawer" direction="rtl" size="50%">
-
-      <el-form :model="productModel" label-width="200px">
-        <el-form-item label="productName">
-          <el-input v-model="productModel.productName" placeholder="请输入标题"></el-input>
-        </el-form-item>
-        <el-form-item label="unitPrice">
-          <el-input v-model="productModel.unitPrice" placeholder="请输入标题"></el-input>
-        </el-form-item>
-        <el-form-item label="quantity">
-          <el-input v-model="productModel.quantity" placeholder="请输入标题"></el-input>
-        </el-form-item>
-        <el-form-item label="category">
-          <el-input v-model="productModel.category" placeholder="请输入标题"></el-input>
-        </el-form-item>
-        <el-form-item label="supplier">
-          <el-input v-model="productModel.supplier" placeholder="请输入标题"></el-input>
-        </el-form-item>
-        <el-form-item label="warehouseName">
-          <el-input v-model="productModel.warehouseName" placeholder="请输入标题"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="addProduct()">
-            添加商品
-          </el-button>
-        </el-form-item>
-      </el-form>
-    </el-drawer>
-  </el-card>
-
-</template>
 <script setup>
-import { CirclePlusFilled, DeleteFilled, Edit, ShoppingCart } from '@element-plus/icons-vue'
-
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
+import { ElMessage } from 'element-plus'
+import { CirclePlusFilled, DeleteFilled, Edit, ShoppingCart } from '@element-plus/icons-vue'
+
 import { useShoppingCartStore } from '@/stores/shoppingCart.js'
 import { addProductService, deleteProductService, getAllProductService, updateProductService } from '@/api/product.js'
-import { ElMessage } from 'element-plus'
 import { useLoginUserStore } from '@/stores/loginUser.js'
 
 //添加商品数据模型
@@ -165,6 +44,7 @@ const onSizeChange = (size) => {
   pageSize.value = size
   getAllProduct()
 }
+
 //当前页码发生变化，调用此函数
 const onCurrentChange = (num) => {
   pageNum.value = num
@@ -218,6 +98,7 @@ const productInfoUpdate =
     //隐藏弹窗
     dialogVisible.value = false
   }
+
 const clearProductModel =
   () => {
     productModel.value = {
@@ -228,11 +109,11 @@ const clearProductModel =
       'supplier': '',
       'warehouseName': ''
     }
-
   }
 
 const shoppingCartStore = useShoppingCartStore()
 const loginUserStore = useLoginUserStore()
+
 // 点击添加到购物车
 const addShoppingCart =
   (row) => {
@@ -256,6 +137,132 @@ onMounted(
 
 </script>
 
-<style scoped>
+<template>
+  <el-card>
+    <template #header>
+      <div class="header">
+        <span>商品信息</span>
+      </div>
+    </template>
 
-</style>
+    <el-button type="primary" @click="visibleDrawer = true">
+      <el-icon>
+        <CirclePlusFilled />
+      </el-icon>
+      添加商品
+    </el-button>
+
+    <el-table
+      :data="productList"
+      style="width: 100%">
+      <el-table-column fixed prop="inventoryId" label="inventoryId" width="160" />
+      <el-table-column prop="productName" label="productName" width="160" />
+      <el-table-column prop="category" label="category" width="200" />
+      <el-table-column prop="unitPrice" label="unitPrice" width="200" />
+      <el-table-column prop="quantity" label="quantity" width="200" />
+      <el-table-column prop="supplier" label="supplier" width="200" />
+      <el-table-column prop="warehouseName" label="warehouseName" width="200" />
+      <el-table-column prop="updateTime" label="updateTime" width="200" />
+      <el-table-column fixed="right" label="Operations" width="200">
+        <template #default="{ row }">
+          <el-button
+            type="primary"
+            :icon="Edit"
+            size="small"
+            @click="showDialog(row)"
+            v-if="loginUserStore.loginUser.roleId===0">
+            Edit
+          </el-button>
+          <el-button
+            type="primary"
+            :icon="DeleteFilled"
+            size="small"
+            @click="deleteProduct(row)"
+            v-if="loginUserStore.loginUser.roleId===0">
+            Delete
+          </el-button>
+          <el-button
+            type="primary"
+            size="small"
+            @click="addShoppingCart(row)"
+            v-if="loginUserStore.loginUser.roleId===1">
+            <el-icon>
+              <ShoppingCart />
+            </el-icon>
+            加入购物车
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!-- 分页条 -->
+    <el-pagination v-model:current-page="pageNum" v-model:page-size="pageSize" :page-sizes="[6, 12, 24, 32]"
+                   layout="jumper, total, sizes, prev, pager, next" background :total="total"
+                   @size-change="onSizeChange"
+                   @current-change="onCurrentChange" style="margin-top: 20px; justify-content: flex-end" />
+    <el-button type="primary" @click="goToCarPath" style="margin-top: 20px; justify-content: flex-end">
+      跳转至购物车页面
+    </el-button>
+    <el-dialog v-model="dialogVisible" :title="title" width="30%">
+      <el-form :model="productModel" label-width="120px" style="padding-right: 30px">
+        <el-form-item label="productName">
+          <el-input v-model="productModel.productName" minlength="1" maxlength="15"></el-input>
+        </el-form-item>
+        <el-form-item label="unitPrice">
+          <el-input v-model="productModel.unitPrice" minlength="1" maxlength="15"></el-input>
+        </el-form-item>
+        <el-form-item label="quantity">
+          <el-input v-model="productModel.quantity" minlength="1" maxlength="15"></el-input>
+        </el-form-item>
+        <el-form-item label="category">
+          <el-input v-model="productModel.category" minlength="1" maxlength="15"></el-input>
+        </el-form-item>
+        <el-form-item label="supplier">
+          <el-input v-model="productModel.supplier" minlength="1" maxlength="15"></el-input>
+        </el-form-item>
+        <el-form-item label="warehouseName">
+          <el-input v-model="productModel.warehouseName" minlength="1" maxlength="15"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button @click="dialogVisible = false; clearProductModel()">取消</el-button>
+          <el-button type="primary" @click="productInfoUpdate()"> 确认</el-button>
+        </el-form-item>
+
+      </el-form>
+
+
+    </el-dialog>
+
+
+    <!-- 抽屉 -->
+    <el-drawer v-model="visibleDrawer" direction="rtl" size="50%">
+
+      <el-form :model="productModel" label-width="200px">
+        <el-form-item label="productName">
+          <el-input v-model="productModel.productName" placeholder="请输入标题"></el-input>
+        </el-form-item>
+        <el-form-item label="unitPrice">
+          <el-input v-model="productModel.unitPrice" placeholder="请输入标题"></el-input>
+        </el-form-item>
+        <el-form-item label="quantity">
+          <el-input v-model="productModel.quantity" placeholder="请输入标题"></el-input>
+        </el-form-item>
+        <el-form-item label="category">
+          <el-input v-model="productModel.category" placeholder="请输入标题"></el-input>
+        </el-form-item>
+        <el-form-item label="supplier">
+          <el-input v-model="productModel.supplier" placeholder="请输入标题"></el-input>
+        </el-form-item>
+        <el-form-item label="warehouseName">
+          <el-input v-model="productModel.warehouseName" placeholder="请输入标题"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="addProduct()">
+            添加商品
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </el-drawer>
+  </el-card>
+</template>
+
+<style scoped></style>

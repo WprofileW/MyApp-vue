@@ -1,4 +1,3 @@
-//导入request.js请求工具
 import request from '@/utils/request.js'
 
 export const addCartItemService =
@@ -19,4 +18,9 @@ export const deleteCartItemService =
 export const getAllCartItemService =
   (pageHelperParams) => {
     return request.post('/shoppingCart/getAllCartItem', pageHelperParams)
+  }
+
+export const deleteAllCartItemsService =
+  () => {
+    return request.get('/shoppingCart/deleteAllCartItems')
   }

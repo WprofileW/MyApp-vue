@@ -45,9 +45,6 @@ function init() {
 
     </el-card>
   </el-space>
-
-
-  <div id="main"></div>
 </template>
 
 <style scoped>

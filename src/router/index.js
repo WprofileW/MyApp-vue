@@ -7,6 +7,7 @@ import LoginUserView from '@/views/user/LoginUserView.vue'
 import UsersView from '@/views/user/UsersView.vue'
 import ProductInfoView from '@/views/product/ProductInfoView.vue'
 import ShoppingCartView from '@/views/customer/ShoppingCartView.vue'
+import OrderView from '@/views/customer/OrderView.vue'
 import Top10View from '@/views/chart/Top10View.vue'
 import DailyChangeView from '@/views/chart/DailyChangeView.vue'
 
@@ -20,6 +21,7 @@ const routes = [
       { path: '/user/allUser', component: UsersView },
       { path: '/product/productInfo', component: ProductInfoView },
       { path: '/product/shoppingCart', component: ShoppingCartView },
+      { path: '/customer/orderItem', component: OrderView },
       { path: '/chart/top10', component: Top10View },
       { path: '/chart/dailyChange', component: DailyChangeView }
     ]

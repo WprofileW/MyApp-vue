@@ -7,7 +7,6 @@ export const useLoginUserStore =
 
     const setLoginUser =
       (newLoginUser) => {
-        // console.log(newLoginUser)
         loginUser.value.username = newLoginUser.value.username
         loginUser.value.roleId = newLoginUser.value.roleId
       }

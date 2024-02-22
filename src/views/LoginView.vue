@@ -17,7 +17,7 @@ const registerData = ref({
   username: '',
   password: '',
   rePassword: '',
-  roleId: '1',
+  roleId: 1,
   realName: '',
   phone: '',
   email: '',
@@ -53,7 +53,6 @@ const rules = {
 
 const register = async () => {
   let result = await userRegisterService(registerData.value)
-  console.log(registerData)
   ElMessage.success(result.msg ? result.msg : '注册成功')
 }
 
@@ -65,9 +64,9 @@ const login = async () => {
   let result = await userLoginService(registerData.value)
   ElMessage.success(result.msg ? result.msg : '登录成功')
   loginUser.value.username = registerData.value.username
-  loginUser.value.roleId = registerData.value.roleId
+  loginUser.value.roleId = result.data.roleId
   loginUserStore.setLoginUser(loginUser)
-  tokenStore.setToken(result.data)
+  tokenStore.setToken(result.data.token)
   //跳转到首页 路由完成跳转
   router.push('/')
 }
@@ -143,13 +142,15 @@ const clearRegisterData = () => {
         </el-form-item>
         <!-- 登录按钮 -->
         <el-form-item>
-          <el-button class="button" type="primary" auto-insert-space @click="login">登录</el-button>
+          <el-button class="button" type="primary" auto-insert-space @click="login">
+            登录
+          </el-button>
         </el-form-item>
         <el-form-item class="flex">
-          <el-link type="info" :underline="false" @click="
-                        isRegister = true;
-                    clearRegisterData();
-                    ">
+          <el-link
+            type="info"
+            :underline="false"
+            @click="isRegister = true;clearRegisterData();">
             注册 →
           </el-link>
         </el-form-item>
