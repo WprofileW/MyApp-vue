@@ -8,6 +8,7 @@ import { useLoginUserStore } from '@/stores/loginUser.js'
 import { useShoppingCartStore } from '@/stores/shoppingCart.js'
 import { addOrderItemService } from '@/api/order.js'
 import { deleteAllCartItemsService, deleteCartItemService, updateCartItemService } from '@/api/shoppingCart'
+import { getProductByName, updateProductByName } from '@/api/product.js'
 
 const store = useShoppingCartStore()
 
@@ -71,7 +72,7 @@ const clearShoppingCart =
     location.reload()
   }
 
-const placeOrder = () => {
+const placeOrder = async () => {
   let orderList = []
   store.selectListArr.forEach(
     item =>
@@ -85,6 +86,20 @@ const placeOrder = () => {
       )
   )
   addOrderItemService(orderList)
+  let updateInventoryList = []
+  for (const item of orderList) {
+    updateInventoryList.push(
+      {
+        productName: item.productName,
+        quantity:
+          (await getProductByName({ productName: item.productName })).data.quantity - item.quantity
+      }
+    )
+  }
+  updateInventoryList.forEach(
+    item => updateProductByName(item)
+  )
+  clearShoppingCart()
   ElMessage.success('下单成功')
 }
 
@@ -102,7 +117,7 @@ const placeOrder = () => {
       <el-table-column fixed prop="productName" label="productName" width="150" />
       <el-table-column prop="category" label="category" width="150" />
       <el-table-column prop="unitPrice" label="unitPrice" width="150" />
-      <el-table-column prop="quantity" label="quantity" width="150" />
+      <el-table-column prop="quantity" label="库存数量" width="150" />
       <el-table-column prop="supplier" label="supplier" width="150" />
       <el-table-column fixed="right" label="购买数量">
         <template #default="scope">

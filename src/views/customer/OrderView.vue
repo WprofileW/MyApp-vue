@@ -4,7 +4,7 @@ import { ElMessage } from 'element-plus'
 import { Document, Edit } from '@element-plus/icons-vue'
 import { getAllOrderItemService } from '@/api/order.js'
 import { updateCartItemService } from '@/api/shoppingCart.js'
-import {useLoginUserStore} from '@/stores/loginUser.js'
+import { useLoginUserStore } from '@/stores/loginUser.js'
 
 const loginUserStore = useLoginUserStore()
 
@@ -50,7 +50,7 @@ const getAllOrderItems = async () => {
   allOrderItems.value = result.data.items
 }
 
-const disabled=ref(loginUserStore.loginUser.roleId===1)
+const disabled = ref(loginUserStore.loginUser.roleId === 1)
 //控制添加分类弹窗
 const dialogVisible = ref(false)
 //定义变量,控制标题的展示
@@ -87,12 +87,16 @@ onMounted(() => {
         <span>用户信息</span>
       </div>
     </template>
-    <el-table :data="allOrderItems" style="width: 100%">
+    <el-table
+      :data="allOrderItems"
+      :default-sort="{ prop: 'orderDate', order: 'descending' }"
+      style="width: 100%"
+    >
       <el-table-column fixed prop="productName" label="productName" width="160" />
       <el-table-column prop="unitPrice" label="unitPrice" width="120" />
       <el-table-column prop="quantity" label="quantity" width="120" />
       <el-table-column prop="totalPrice" label="totalPrice" width="200" />
-      <el-table-column prop="orderDate" label="orderDate" width="200" />
+      <el-table-column prop="orderDate" label="orderDate" width="200" sortable />
       <el-table-column fixed="right" label="Operations" width="120">
         <template #default="{ row }">
           <el-button

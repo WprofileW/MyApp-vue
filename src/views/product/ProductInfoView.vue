@@ -145,7 +145,7 @@ onMounted(
       </div>
     </template>
 
-    <el-button type="primary" @click="visibleDrawer = true">
+    <el-button type="primary" @click="visibleDrawer = true" v-if="loginUserStore.loginUser.roleId===0">
       <el-icon>
         <CirclePlusFilled />
       </el-icon>

@@ -78,23 +78,24 @@ const handleCommand =
             <span>图表</span>
           </template>
 
-          <el-menu-item index="/chart/top10">
+          <el-menu-item index="/chart/inventoryChange">
             <template #title>
               <el-icon>
                 <PictureFilled />
               </el-icon>
-              <span>top10</span>
+              <span>实时库存</span>
             </template>
           </el-menu-item>
 
-          <el-menu-item index="/chart/dailyChange">
+          <el-menu-item index="/chart/topThreeSale">
             <template #title>
               <el-icon>
                 <PictureFilled />
               </el-icon>
-              <span>dailyChange</span>
+              <span>销售额前三</span>
             </template>
           </el-menu-item>
+
         </el-sub-menu>
 
         <el-menu-item index="/product/productInfo">
@@ -109,7 +110,7 @@ const handleCommand =
           <el-icon>
             <ShoppingCart />
           </el-icon>
-          <span >购物车</span>
+          <span>购物车</span>
         </el-menu-item>
 
         <el-menu-item index="/customer/orderItem" v-if="loginUserStore.loginUser.roleId===1">
@@ -150,7 +151,7 @@ const handleCommand =
       <!-- 头部区域 -->
       <el-header>
         <div>
-          <strong>{{ loginUserStore.loginUser.username}},欢迎登陆</strong>
+          <strong>{{ loginUserStore.loginUser.username }},欢迎登陆</strong>
         </div>
         <!-- 下拉菜单 -->
         <!-- command: 条目被点击后会触发,在事件函数上可以声明一个参数,接收条目对应的指令 -->
