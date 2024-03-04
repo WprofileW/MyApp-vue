@@ -7,6 +7,26 @@ onMounted(() => {
   barChart()
 })
 
+function formatJavaTimestamp(javaTimestamp) {
+  const year = javaTimestamp.substring(0, 4)
+  const month = javaTimestamp.substring(4, 6) - 1 // JavaScript的月份从0开始
+  const day = javaTimestamp.substring(6, 8)
+  const hour = javaTimestamp.substring(8, 10)
+  const minute = javaTimestamp.substring(10, 12)
+  const jsTimestamp = new Date(year, month, day, hour, minute)
+
+  const options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'Asia/Shanghai'
+  }
+
+  return jsTimestamp.toLocaleString('zh-CN', options)
+}
+
 async function barChart() {
   let response = await getInventoryChangeLimitFiveService()
   let data = response.data
@@ -27,8 +47,9 @@ async function barChart() {
     })
 
   // 提取时间戳和产品名称
-  var timestamps = Object.keys(groupedData)
-  var products = Array.from(new Set(data.map(item => item.productName)))
+  const timestamps = Object.keys(groupedData)
+  const formatTimeStamps = timestamps.map(item => formatJavaTimestamp(item))
+  const products = Array.from(new Set(data.map(item => item.productName)))
 
   // 构造 ECharts 需要的数据格式
   var option = {
@@ -40,7 +61,7 @@ async function barChart() {
     },
     xAxis: {
       type: 'category',
-      data: timestamps
+      data: formatTimeStamps
     },
     yAxis: {
       type: 'value'

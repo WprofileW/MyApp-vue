@@ -108,7 +108,8 @@ async function pieChart() {
 
 <style scoped>
 #pieChart {
-  display: flex; flex-wrap: wrap;
+  display: flex;
+  flex-wrap: wrap;
   background-color: white;
   border: 1px solid #ddd;
   margin: auto;
